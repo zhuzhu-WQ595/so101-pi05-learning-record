@@ -147,10 +147,4 @@ python code/merge_dagger.py
 # 输出：local/so101_clip_cup_dagger2（73 episodes, 26780 frames）
 ```
 
-## 9. 文档生成
-
-```bash
-# code/make_docx.py 生成 Word 学习记录
-python code/make_docx.py
-# code/make_figures.py、make_figures2.py 生成文档配图
 ```
