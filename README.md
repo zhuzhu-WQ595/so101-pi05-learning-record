@@ -5,7 +5,14 @@
 ## 内容
 
 - **`SO101机械臂微调π0.5学习记录.docx`**：完整学习记录文档（Word 格式，含图）
+- **`COMMANDS.md`**：全流程命令清单（安装、标定、采集、清洗、训练、部署、DAgger）
 - **`images/`**：文档中用到的全部图片（训练数据、推理对比、评估截图、DAgger 数据检查图等）
+- **`code/`**：自写脚本
+  - `dagger_with_home.py`：DAgger 启动器，加了一键回 home 位
+  - `merge_dagger.py`：原示范 + DAgger 纠正合并脚本（含坏样本剔除清单）
+  - `preview.py`：按 episode 生成首尾帧拼图，用于数据检查
+  - `make_docx.py`：Word 学习记录生成脚本
+  - `make_figures.py` / `make_figures2.py`：文档配图生成
 
 ## 项目概要
 
