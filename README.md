@@ -27,6 +27,16 @@
 | 失败恢复 | DAgger 接管纠正 29 条，清洗后 23 条并入训练集，模型学会失败后重新抓取 |
 | 在线强化学习 | RL Token：冻结 π0.5 提取 z_rl 作状态，关键阶段 Actor 接管、Critic 异步更新，人工 y/n 奖励（见 RL_TOKEN.md） |
 
+## 实拍记录
+
+| 硬件与相机 | 实机评估 | DAgger 数据检查 |
+|---|---|---|
+| ![双相机安装](images/01_dual_camera.jpg) | ![成功放入纸杯](images/04_rollout_success_ep9_front.jpg) | ![DAgger 纠正数据检查](images/18_dagger_inspect_a.jpg) |
+
+| 评估结果分布 | 动作级安全监控风险曲线 | RL Token 架构 |
+|---|---|---|
+| ![两组评估结果对比](images/12_outcome_compare.png) | ![监控风险曲线](code/monitor/monitor_report/ep00_risk.png) | ![RL pipeline](images/20_rl_pipeline.png) |
+
 ## 文档目录
 
 1. 项目背景与目标

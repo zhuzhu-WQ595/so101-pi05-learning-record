@@ -564,12 +564,15 @@ bullets([
     ("安全接管：", "leader 臂始终镜像跟随，按 h 即从当前位姿无缝接管人工纠正，接管段保留为纠正样本；"
                 "训练时动作仍过一遍安全监控（见第 10 章 monitor 部分）的降速/冻结。"),
 ])
+figure("20_rl_pipeline.png", "RL Token 训练架构：冻结 π0.5 提取 z_rl，关键阶段由 Actor 接管", 16)
 h("12.2  训练流程", 2)
 para("离线阶段：先用拧螺栓示范集预计算冻结 π0.5 的 prefix 表征（mmap），再训 RL Token 的 encoder/decoder 得到 z_rl；"
      "随后逐条回放标注关键阶段区间，训分类器并挑阈值。在线阶段：先 dry_run 预检、再 vla_only 上机验证，"
      "然后 warmup 若干回合纯 VLA 填充 replay buffer，最后开 Actor 训练，Critic 在后台异步更新。", indent=True)
+figure("21_rl_critical_phase.png", "关键阶段示意：只有中间一小段交给 Actor，边界由 c 键或分类器判定", 16)
 para("一个要点是 warmup：buffer 里先用 VLA 自己的关键阶段行为灌满，Critic 才有初始信号、Actor 不会从随机策略起步；"
      "warmup 回合数太少时前几轮 Actor 接管明显不稳。", indent=True)
+figure("22_rl_training_curves.png", "Stage 2 在线训练指标（示意曲线，实机训练后替换为 rl_metrics.log 实测图）", 16)
 para("完整命令与参数见 RL_TOKEN.md / COMMANDS.md 第 10 节。", indent=True)
 
 # ---------------- 13 踩坑汇总 ----------------
