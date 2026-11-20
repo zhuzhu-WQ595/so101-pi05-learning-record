@@ -148,3 +148,41 @@ python code/merge_dagger.py
 ```
 
 ```
+
+## 10. RL Token 在线强化学习（可选，接微调之后）
+
+基于 [RL-Token-Pi05](https://github.com/Zhengsw03/RL-Token-Pi05-open)（自带含 pi05_rlt 的 lerobot fork），
+完整步骤与说明见 `RL_TOKEN.md`。
+
+```bash
+cd ~/RL-Token-Pi05 && export PYTHONPATH=$PWD/lerobot/src:$PYTHONPATH
+
+PI05_CKPT=$HOME/outputs/train/pi05_so101_bolt/checkpoints/last/pretrained_model
+DATASET=$HOME/.cache/huggingface/lerobot/local/so101_bolt
+TOKENIZER=$HOME/models/pi05_base
+CAMMAP='{"front": "observation.images.front", "wrist": "observation.images.wrist"}'
+
+# 10.1 预计算冻结 π0.5 的 prefix 表征（~5 万帧单卡约 80 分钟）
+python scripts/precompute_pi05_embeddings.py \
+  --pi05_path $PI05_CKPT --tokenizer_path $TOKENIZER \
+  --dataset_repo_id $DATASET \
+  --output_dir outputs/pi05_bolt_embeddings \
+  --camera_map "$CAMMAP" --batch_size 16 --num_workers 4 --device cuda
+
+# 10.2 训练 RL Token（encoder/decoder → 2048 维 z_rl）
+python scripts/train_rlt_stage1_pi05.py \
+  --precomputed_path outputs/pi05_bolt_embeddings \
+  --output_dir outputs/rlt_stage1_bolt \
+  --steps 30000 --batch_size 64 --lr 1e-4 --warmup_steps 200 \
+  --save_every 1000 --log_every 50 --num_workers 4 --device cuda --gpus 0 --use_amp
+
+# 10.3（可选）关键阶段分类器：annotate_dataset.py → precompute_critical_zrl.py
+#      → train_critical_classifier.py → evaluate/visualize，见 RL_TOKEN.md
+
+# 10.4 实机在线 RL（先 dry_run 预检 → vla_only → 开 Actor 训练）
+python scripts/train_rlt_stage2_pi05.py --config configs/stage2_pi05.json
+# 键位: a 启用Actor / c 关键阶段 / h 人工接管 / f 结束回合 / y n 奖励
+
+# 10.5 推理部署
+python scripts/infer_rlt_stage2_pi05.py --config configs/infer_pi05.json
+```
