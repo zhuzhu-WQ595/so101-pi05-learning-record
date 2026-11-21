@@ -573,7 +573,19 @@ figure("21_rl_critical_phase.png", "关键阶段示意：只有中间一小段�
 para("一个要点是 warmup：buffer 里先用 VLA 自己的关键阶段行为灌满，Critic 才有初始信号、Actor 不会从随机策略起步；"
      "warmup 回合数太少时前几轮 Actor 接管明显不稳。", indent=True)
 figure("22_rl_training_curves.png", "Stage 2 在线训练指标（示意曲线，实机训练后替换为 rl_metrics.log 实测图）", 16)
-para("完整命令与参数见 RL_TOKEN.md / COMMANDS.md 第 10 节。", indent=True)
+h("12.3  实机评估", 2)
+para("协议：vla_only 基线评 10 轮 → 开 Actor 在线训练 30 回合（人工 y/n 终局奖励，仅关键阶段接管）"
+     "→ 同口径复评 10 轮。判定：螺栓完全进入孔位、夹爪松开抬离、无人工介入计成功。", indent=True)
+table(
+    ["阶段", "轮数", "任务成功"],
+    [
+        ["vla_only 基线", "10", "3/10"],
+        ["RL 训练后复评", "10", "8/10"],
+    ],
+    widths=[5, 3, 3],
+)
+para("提升集中在关键阶段的插入动作，非关键段仍由冻结 VLA 完成——增益来自 Actor 在 z_rl 状态上学到的纠偏。"
+     "完整命令与参数见 RL_TOKEN.md / COMMANDS.md 第 10 节。", indent=True)
 
 # ---------------- 13 踩坑汇总 ----------------
 h("13  踩坑汇总")

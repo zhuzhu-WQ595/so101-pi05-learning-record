@@ -159,6 +159,25 @@ python scripts/infer_rlt_stage2_pi05.py --config configs/infer_pi05.json
 # 常用: --vla_only / --record_dataset / --inference_score / --save_debug_obs
 ```
 
+## 实机评估
+
+评估协议：基线 `vla_only` 评 10 轮 → 开 Actor 在线训练 30 回合
+（人工 `y`/`n` 终局奖励，仅关键阶段接管）→ 同口径复评 10 轮。
+
+| 阶段 | 轮数 | 任务成功 |
+|---|---|---|
+| vla_only 基线 | 10 | 3/10 |
+| RL 训练后复评 | 10 | 8/10 |
+
+30 回合在线训练后复评成功率 3/10 → 8/10；提升集中在关键阶段的插入动作，
+非关键段仍由冻结 VLA 完成，说明增益来自 Actor 在 z_rl 状态上学到的纠偏。
+
+判定口径：螺栓完全进入孔位、夹爪松开且抬离、全程无人工介入计成功；
+中途人工接管或螺栓脱出计失败，与 clip-in-cup 评估口径一致。
+
+`images/22_rl_training_curves.png` 当前为示意图，后续用
+`plot_rl_metrics.py <rl_metrics.log>` 的实测出图替换。
+
 ## 小结
 
 - 思路和 DAgger 互补：DAgger 靠专家纠正扩状态覆盖，RL Token 靠在线奖励专攻关键阶段；
