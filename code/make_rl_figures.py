@@ -51,7 +51,7 @@ box(ax, (77, 6), 14, 9, "动作\nchunk", C_ACT, fs=10)
 box(ax, (97, 18), 16, 9, "SO-101\n实机执行", "#7A5195", fs=10)
 box(ax, (52, 18), 20, 7.5, "replay buffer\n（只存关键阶段）", C_GRAY, fs=9)
 box(ax, (97, 6), 16, 7.5, "y / n\n人工奖励", C_CRIT, fs=10)
-box(ax, (27, 42.5), 40, 7.5, "Critic 后台异步更新（不阻塞 30Hz 控制）", C_CRIT, fs=10)
+box(ax, (27, 42.5), 40, 7.5, "Critic 后台异步更新（不阻塞 50Hz 控制）", C_CRIT, fs=10)
 
 arrow(ax, (22, 34.5), (27, 34.5), C_VLA)
 arrow(ax, (47, 34.5), (52, 34.5), C_VLA)

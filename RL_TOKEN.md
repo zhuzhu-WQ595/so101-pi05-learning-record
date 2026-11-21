@@ -13,7 +13,7 @@
 - **关键阶段（critical phase）**：回合里只有决定成败的那一小段交给 Actor 出动作，
   其余走冻结 VLA。边界可以手按 `c` 切，我另外训了个分类器（输入 z_rl + 本体状态）自动判。
 - **奖励**：每回合结束操作员按 `y`/`n` 判成败，只有关键阶段数据进 replay buffer，
-  Critic 在后台异步更新，不阻塞 30Hz 控制。
+  Critic 在后台异步更新，不阻塞 50Hz 控制环（`control_fps` 沿用上游默认 50）。
 - **人在环接管**：leader 臂全程镜像跟随，按 `h` 从当前位姿无缝接管，接管段保留为纠正样本；
   下发的动作同时过安全监控（`code/monitor/safety_monitor.py`），抖动/越界会被降速或冻结。
 
@@ -174,6 +174,10 @@ python scripts/infer_rlt_stage2_pi05.py --config configs/infer_pi05.json
 
 判定口径：螺栓完全进入孔位、夹爪松开且抬离、全程无人工介入计成功；
 中途人工接管或螺栓脱出计失败，与 clip-in-cup 评估口径一致。
+
+实跑配置沿用上游模板默认：`control_fps=50`、`warmup_episodes=5`、
+手动 `c` 切关键段（分类器训练完成备用）、`reference_dropout=0.5`、
+`policy_fixed_std=0.05`、`critic_per_actor=2`、`utd_ratio=5`。
 
 `images/22_rl_training_curves.png` 当前为示意图，后续用
 `plot_rl_metrics.py <rl_metrics.log>` 的实测出图替换。
