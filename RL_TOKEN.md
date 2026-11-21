@@ -14,8 +14,13 @@
   其余走冻结 VLA。边界可以手按 `c` 切，我另外训了个分类器（输入 z_rl + 本体状态）自动判。
 - **奖励**：每回合结束操作员按 `y`/`n` 判成败，只有关键阶段数据进 replay buffer，
   Critic 在后台异步更新，不阻塞 50Hz 控制环（`control_fps` 沿用上游默认 50）。
-- **人在环接管**：leader 臂全程镜像跟随，按 `h` 从当前位姿无缝接管，接管段保留为纠正样本；
-  下发的动作同时过安全监控（`code/monitor/safety_monitor.py`），抖动/越界会被降速或冻结。
+- **人在环接管**：leader 臂全程镜像跟随，按 `h` 从当前位姿无缝接管，接管段保留为纠正样本。
+- **动作过滤与 buffer 语义**：上游 Stage2 自带逐步限幅（actor_clamp）在 send 前执行；
+  buffer 存的是 `follower.send_action()` 返回的**实际下发动作**（限幅/硬件裁剪后），
+  非策略原始输出；HUMAN 段还会把 ref_chunk 对应行覆盖成执行动作当 BC target。
+  注意：安全监控（`code/monitor/safety_monitor.py`）接在标准 rollout 的动作管线上
+  （`rollout_monitored.py`），Stage2 自写循环无 processor 钩子——本次 RL 训练回路未接入，
+  若要训练期启用需单独接线。
 
 ```
 录拧螺栓示范 → 微调 π0.5 → 预计算 prefix 表征 → 训 RLT(Stage1) 得到 z_rl
